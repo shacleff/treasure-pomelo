@@ -1,23 +1,25 @@
 var logger = require('pomelo-logger').getLogger('bearcat-treasures', 'Formula');
 
-var Formula = function() {
+var Formula = function () {
 
 }
 
 /**
- * Check the distance between origin and target whether less than the range.
+ * 检测两点之间的距离是否小于某个范围
  *
  * @param origin {Object} origin entity
  * @param target {Object} target entity
  * @param range {Number} the range of distance
  */
-Formula.inRange = function(origin, target, range) {
+Formula.inRange = function (origin, target, range) {
   var dx = origin.x - target.x;
   var dy = origin.y - target.y;
   return dx * dx + dy * dy <= range * range;
 };
 
-Formula.distance = function(x1, y1, x2, y2) {
+
+//两点之间的距离
+Formula.distance = function (x1, y1, x2, y2) {
   var dx = x2 - x1;
   var dy = y2 - y1;
 
@@ -25,13 +27,16 @@ Formula.distance = function(x1, y1, x2, y2) {
 };
 
 /**
+ * 
+ * 返回时间格式如下: 2018-8-21 10:24:41
+ * 
  * convert the date according to format
  * @param {Object} date
  * @param {String} format
  * @param {String}
  */
-Formula.timeFormat = function(date) {
-  var n = date.getFullYear();
+Formula.timeFormat = function (date) {
+  var n = date.getFullYear();   
   var y = date.getMonth() + 1;
   var r = date.getDate();
   var mytime = date.toLocaleTimeString();

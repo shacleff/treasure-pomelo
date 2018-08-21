@@ -8,9 +8,9 @@ var treasure = require('../../config/data/treasure');
  *
  * @param {Array}
  */
-var DataApi = function(data) {
+var DataApi = function (data) {
   var fields = {};
-  data[1].forEach(function(i, k) {
+  data[1].forEach(function (i, k) {
     fields[i] = k;
   });
   data.splice(0, 2);
@@ -18,7 +18,7 @@ var DataApi = function(data) {
   var result = {},
     ids = [],
     item;
-  data.forEach(function(k) {
+  data.forEach(function (k) {
     item = mapData(fields, k);
     result[item.id] = item;
     ids.push(item.id);
@@ -36,7 +36,7 @@ var DataApi = function(data) {
  * @return {Object} result
  * @api private
  */
-var mapData = function(fields, item) {
+var mapData = function (fields, item) {
   var obj = {};
   for (var k in fields) {
     obj[k] = item[fields[k]];
@@ -52,7 +52,7 @@ var mapData = function(fields, item) {
  * @return {Array} result
  * @api public
  */
-DataApi.prototype.findBy = function(attr, value) {
+DataApi.prototype.findBy = function (attr, value) {
   var result = [];
   //console.log(' findBy ' + attr + '  value:' + value + '  index: ' + index);
   var i, item;
@@ -72,11 +72,11 @@ DataApi.prototype.findBy = function(attr, value) {
  * @return {Obj}
  * @api public
  */
-DataApi.prototype.findById = function(id) {
+DataApi.prototype.findById = function (id) {
   return this.data[id];
 };
 
-DataApi.prototype.random = function() {
+DataApi.prototype.random = function () {
   var length = this.ids.length;
   var rid = this.ids[Math.floor(Math.random() * length)];
   return this.data[rid];
@@ -88,17 +88,17 @@ DataApi.prototype.random = function() {
  * @return {array}
  * @api public
  */
-DataApi.prototype.all = function() {
+DataApi.prototype.all = function () {
   return this.data;
 };
 
-var DataApiUtil = function() {
+var DataApiUtil = function () {
   this.areaData = null;
   this.roleData = null;
   this.treasureData = null;
 }
 
-DataApiUtil.prototype.area = function() {
+DataApiUtil.prototype.area = function () {
   if (this.areaData) {
     return this.areaData;
   }
@@ -107,7 +107,7 @@ DataApiUtil.prototype.area = function() {
   return this.areaData;
 }
 
-DataApiUtil.prototype.role = function() {
+DataApiUtil.prototype.role = function () {
   if (this.roleData) {
     return this.roleData;
   }
@@ -116,7 +116,7 @@ DataApiUtil.prototype.role = function() {
   return this.roleData;
 }
 
-DataApiUtil.prototype.treasure = function() {
+DataApiUtil.prototype.treasure = function () {
   if (this.treasureData) {
     return this.treasureData;
   }
