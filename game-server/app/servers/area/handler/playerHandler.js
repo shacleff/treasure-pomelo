@@ -33,7 +33,7 @@ PlayerHandler.prototype.enterScene = function (msg, session, next) {
 
   player.serverId = session.frontendId;
 
-  //往地图服务添加玩家
+  //往地图服务添加玩家. 这样经过服务器同步后，所有玩家就可以看到这个新加入的玩家。
   if (!this.areaService.addEntity(player)) {
     logger.error("Add player to area faild! areaId : " + player.areaId);
     next(new Error('fail to add user into area'), {
@@ -102,7 +102,11 @@ PlayerHandler.prototype.getAnimation = function (msg, session, next) {
  * @api public
  */
 PlayerHandler.prototype.move = function (msg, session, next) {
+
+  //客户端请求移动
   var endPos = msg.targetPos;
+
+
   var playerId = session.get('playerId');
   var player = this.areaService.getPlayer(playerId);
   if (!player) {
@@ -144,7 +148,7 @@ PlayerHandler.prototype.move = function (msg, session, next) {
       sPos: player.getPos()
     });
 
-    //全局广播玩家移动了
+    //全局广播玩家移动位置
     this.areaService.getChannel().pushMessage({
       route: 'onMove',
       entityId: player.entityId,

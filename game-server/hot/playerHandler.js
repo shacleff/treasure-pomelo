@@ -113,13 +113,17 @@ PlayerHandler.prototype.move = function(msg, session, next) {
     endPos: endPos,
   });
 
+
+  //onMove
   if (this.areaService.addAction(action)) {
+
+    //
     next(null, {
       code: this.consts.MESSAGE.RES,
       sPos: player.getPos()
     });
 
-
+    //服务器端计算开始移动
     this.areaService.getChannel().pushMessage({
       route: 'onMove',
       entityId: player.entityId,
