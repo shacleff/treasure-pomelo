@@ -8,6 +8,7 @@ var GateHandler = function(app) {
 	this.dispatcher = null;
 };
 
+//玩家连接成功，给玩家从服务器群中分配一个connector服务器
 GateHandler.prototype.queryEntry = function(msg, session, next) {
 	var uid = msg.uid;
 	if (!uid) {

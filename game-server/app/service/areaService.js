@@ -3,7 +3,7 @@ var EventEmitter = require('events').EventEmitter;
 var bearcat = require('bearcat');
 var pomelo = require('pomelo');
 
-var AreaService = function() {
+var AreaService = function () {
   this.id = 0;
   this.width = 0;
   this.height = 0;
@@ -23,41 +23,54 @@ var AreaService = function() {
  * @param {Object} opts
  * @api public
  */
-AreaService.prototype.init = function(opts) {
+AreaService.prototype.init = function (opts) {
   this.id = opts.id;
   this.width = opts.width;
   this.height = opts.height;
 
+  //初始化地图，在地图上生成40个宝物
   this.generateTreasures(40);
 
   //area run
   this.run();
 };
 
-AreaService.prototype.run = function() {
+//开启地图更新
+AreaService.prototype.run = function () {
   setInterval(this.tick.bind(this), 100);
 }
 
-AreaService.prototype.tick = function() {
+//每间隔0.1s进行玩家实体更新、排行榜更新
+AreaService.prototype.tick = function () {
+
+  //更新玩家的动作序列帧
   //run all the action
   this.actionManagerService.update();
+
+  //
   this.entityUpdate();
+
+  //
   this.rankUpdate();
 }
 
-AreaService.prototype.addAction = function(action) {
+//添加一个动作
+AreaService.prototype.addAction = function (action) {
   return this.actionManager().addAction(action);
 }
 
-AreaService.prototype.abortAction = function(type, id) {
+//
+AreaService.prototype.abortAction = function (type, id) {
   return this.actionManager().abortAction(type, id);
 }
 
-AreaService.prototype.abortAllAction = function(id) {
+//
+AreaService.prototype.abortAllAction = function (id) {
   return this.actionManager().abortAllAction(id);
 }
 
-AreaService.prototype.getChannel = function() {
+//得到某个地图中的channel，相当于一个服
+AreaService.prototype.getChannel = function () {
   if (this.channel) {
     return this.channel;
   }
@@ -66,15 +79,34 @@ AreaService.prototype.getChannel = function() {
   return this.channel;
 };
 
-AreaService.prototype.addEvent = function(player) {
+//为玩家添加捡宝物事件
+AreaService.prototype.addEvent = function (player) {
+
+  //
   var self = this;
-  player.on('pickItem', function(args) {
+
+  //玩家发起宝物
+  player.on('pickItem', function (args) {
+
+    //
     var player = self.getEntity(args.entityId);
+
+    //
     var treasure = self.getEntity(args.target);
     player.target = null;
+
+    //捡到宝物
     if (treasure) {
+
+      //服务器先做数据处理
+
+      //1.玩家分数增加
       player.addScore(treasure.score);
+
+      //移除掉宝物
       self.removeEntity(args.target);
+
+      //广播捡到了宝物。。广播后，客户端收到信息，进行地图更新之类的
       self.getChannel().pushMessage({
         route: 'onPickItem',
         entityId: args.entityId,
@@ -85,7 +117,7 @@ AreaService.prototype.addEvent = function(player) {
   });
 }
 
-AreaService.prototype.entityUpdate = function() {
+AreaService.prototype.entityUpdate = function () {
   if (this.reduced.length > 0) {
     this.getChannel().pushMessage({
       route: 'removeEntities',
@@ -111,7 +143,7 @@ AreaService.prototype.entityUpdate = function() {
  * Add entity to area
  * @param {Object} e Entity to add to the area.
  */
-AreaService.prototype.addEntity = function(e) {
+AreaService.prototype.addEntity = function (e) {
   if (!e || !e.entityId) {
     return false;
   }
@@ -135,17 +167,31 @@ AreaService.prototype.addEntity = function(e) {
 };
 
 
-AreaService.prototype.rankUpdate = function() {
+AreaService.prototype.rankUpdate = function () {
+
+  //时钟累计
   this.tickCount++;
+
+  //超过10个时钟，从新进行排名计算
   if (this.tickCount >= 10) {
+
+    //
     this.tickCount = 0;
+
+    //玩家都是添加到地图中的，从地图中得到所有玩家
     var player = this.getAllPlayers();
-    player.sort(function(a, b) {
+
+    //根据分数排名
+    player.sort(function (a, b) {
       return a.score < b.score;
     });
-    var ids = player.slice(0, 10).map(function(a) {
+
+    //取得前10名
+    var ids = player.slice(0, 10).map(function (a) {
       return a.entityId;
     });
+
+    //广播最新的排名消息
     this.getChannel().pushMessage({
       route: 'rankUpdate',
       entities: ids
@@ -158,7 +204,7 @@ AreaService.prototype.rankUpdate = function() {
  * @param {Number} entityId The entityId to remove
  * @return {boolean} remove result
  */
-AreaService.prototype.removeEntity = function(entityId) {
+AreaService.prototype.removeEntity = function (entityId) {
   var e = this.entities[entityId];
   if (!e) {
     return true;
@@ -185,7 +231,7 @@ AreaService.prototype.removeEntity = function(entityId) {
  * Get entity from area
  * @param {Number} entityId.
  */
-AreaService.prototype.getEntity = function(entityId) {
+AreaService.prototype.getEntity = function (entityId) {
   return this.entities[entityId];
 };
 
@@ -193,7 +239,7 @@ AreaService.prototype.getEntity = function(entityId) {
  * Get entities by given id list
  * @param {Array} The given entities' list.
  */
-AreaService.prototype.getEntities = function(ids) {
+AreaService.prototype.getEntities = function (ids) {
   var result = [];
   for (var i = 0; i < ids.length; i++) {
     var entity = this.entities[ids[i]];
@@ -205,7 +251,7 @@ AreaService.prototype.getEntities = function(ids) {
   return result;
 };
 
-AreaService.prototype.getAllPlayers = function() {
+AreaService.prototype.getAllPlayers = function () {
   var _players = [];
   var players = this.players;
   for (var id in players) {
@@ -215,7 +261,7 @@ AreaService.prototype.getAllPlayers = function() {
   return _players;
 };
 
-AreaService.prototype.generateTreasures = function(n) {
+AreaService.prototype.generateTreasures = function (n) {
   if (!n) {
     return;
   }
@@ -232,7 +278,7 @@ AreaService.prototype.generateTreasures = function(n) {
   }
 };
 
-AreaService.prototype.getAllEntities = function() {
+AreaService.prototype.getAllEntities = function () {
   var r = {};
   var entities = this.entities;
 
@@ -244,12 +290,12 @@ AreaService.prototype.getAllEntities = function() {
   // return this.entities;
 };
 
-AreaService.prototype.getPlayer = function(playerId) {
+AreaService.prototype.getPlayer = function (playerId) {
   var entityId = this.players[playerId];
   return this.entities[entityId];
 };
 
-AreaService.prototype.removePlayer = function(playerId) {
+AreaService.prototype.removePlayer = function (playerId) {
   var entityId = this.players[playerId];
 
   if (entityId) {
@@ -261,7 +307,7 @@ AreaService.prototype.removePlayer = function(playerId) {
 /**
  * Get area entities for given postion and range.
  */
-AreaService.prototype.getAreaInfo = function() {
+AreaService.prototype.getAreaInfo = function () {
   var entities = this.getAllEntities();
   return {
     id: this.id,
@@ -271,19 +317,19 @@ AreaService.prototype.getAreaInfo = function() {
   };
 };
 
-AreaService.prototype.getWidth = function() {
+AreaService.prototype.getWidth = function () {
   return this.width;
 };
 
-AreaService.prototype.getHeight = function() {
+AreaService.prototype.getHeight = function () {
   return this.height;
 };
 
-AreaService.prototype.entities = function() {
+AreaService.prototype.entities = function () {
   return this.entities;
 };
 
-AreaService.prototype.actionManager = function() {
+AreaService.prototype.actionManager = function () {
   return this.actionManagerService;
 };
 

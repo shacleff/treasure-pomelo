@@ -4,7 +4,7 @@ var bearcat = require('bearcat');
 // generate playerId
 var id = 1;
 
-var EntryHandler = function(app) {
+var EntryHandler = function (app) {
   this.app = app;
   this.serverId = app.get('serverId').split('-')[2];
 };
@@ -17,7 +17,7 @@ var EntryHandler = function(app) {
  * @param  {Function} next    next stemp callback
  * @return {Void}
  */
-EntryHandler.prototype.entry = function(msg, session, next) {
+EntryHandler.prototype.entry = function (msg, session, next) {
   var self = this;
   var playerId = parseInt(this.serverId + id, 10);
   id += 1;
@@ -27,13 +27,17 @@ EntryHandler.prototype.entry = function(msg, session, next) {
   session.set('areaId', 1);
   session.on('closed', onUserLeave.bind(null, self.app));
   session.pushAll();
+
+  //
   next(null, {
     code: Code.OK,
     playerId: playerId
   });
 };
 
-var onUserLeave = function(app, session, reason) {
+var onUserLeave = function (app, session, reason) {
+
+  //远程调用玩家离开了
   if (session && session.uid) {
     app.rpc.area.playerRemote.playerLeave(session, {
       playerId: session.get('playerId'),
@@ -42,7 +46,7 @@ var onUserLeave = function(app, session, reason) {
   }
 };
 
-module.exports = function(app) {
+module.exports = function (app) {
   return bearcat.getBean({
     id: "entryHandler",
     func: EntryHandler,
