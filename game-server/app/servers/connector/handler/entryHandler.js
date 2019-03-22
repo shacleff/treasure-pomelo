@@ -36,8 +36,6 @@ EntryHandler.prototype.entry = function (msg, session, next) {
 };
 
 var onUserLeave = function (app, session, reason) {
-
-  //远程调用玩家离开了
   if (session && session.uid) {
     app.rpc.area.playerRemote.playerLeave(session, {
       playerId: session.get('playerId'),

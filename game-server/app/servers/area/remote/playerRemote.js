@@ -7,41 +7,23 @@ var PlayerRemote = function(app) {
 	this.areaService = null;
 }
 
-/**
- * Player exits. It will persistent player's state in the database.
- *
- * @param {Object} args
- * @param {Function} cb
- * @api public
- */
 PlayerRemote.prototype.playerLeave = function(args, cb) {
-
-	//地图id
-	var areaId = args.areaId;
-
-	//玩家id
-	var playerId = args.playerId;
-
-	//根据玩家id得到玩家信息
+	var areaId = args.areaId;     // 哪个玩家离开哪个地图根据id标识
+	var playerId = args.playerId; 
 	var player = this.areaService.getPlayer(playerId);
 
-	//
 	if (!player) {
 		this.utils.invokeCallback(cb);
 		return;
 	}
 
-	//地图服务删除玩家
-	this.areaService.removePlayer(playerId);
-
-	//推送玩家离开了
+	this.areaService.removePlayer(playerId);     // 离开后进行清理
 	this.areaService.getChannel().pushMessage({
 		route: 'onUserLeave',
 		code: this.consts.MESSAGE.RES,
 		playerId: playerId
 	});
 
-	//
 	this.utils.invokeCallback(cb);
 };
 

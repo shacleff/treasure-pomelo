@@ -1,9 +1,6 @@
 var bearcat = require('bearcat');
 var pomelo = require('pomelo');
 
-/**
- * Init app for client.
- */
 var app = pomelo.createApp();
 
 var Configure = function() {
@@ -42,7 +39,6 @@ bearcat.createApp([contextPath]);
 bearcat.start(function() {
   Configure();
   app.set('bearcat', bearcat);
-  // start app
   app.start();
 });
 

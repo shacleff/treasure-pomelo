@@ -41,8 +41,7 @@ __resources__["/msgHandler.js"] = {
         }
       });
 
-      // Handle move  message
-      pomelo.on('onMove', function(data) {
+      pomelo.on('onMove', function(data) {                                          // 客户端收到服务器推送的移动结果
         var path = data.path;
         var entity = app.getCurArea().getEntity(data.entityId);
         if (!entity) {
@@ -60,8 +59,7 @@ __resources__["/msgHandler.js"] = {
         app.getCurArea().removeEntity(data.entityId);
       });
 
-      // Handle pick item message
-      pomelo.on('onPickItem', function(data) {
+      pomelo.on('onPickItem', function(data) {                                       // 捡到宝贝
         var area = app.getCurArea();
         var player = area.getEntity(data.entityId);
         var item = area.getEntity(data.target);
@@ -71,7 +69,7 @@ __resources__["/msgHandler.js"] = {
         area.removeEntity(item.entityId);
       });
 
-      pomelo.on('rankUpdate', function(data) {
+      pomelo.on('rankUpdate', function(data) {                                       // 排名更新
         var ul = document.querySelector('#rank ul');
         var area = app.getCurArea();
         var li = "";
@@ -84,14 +82,13 @@ __resources__["/msgHandler.js"] = {
         ul.innerHTML = li;
       });
 
-      // Handle kick out messge, occours when the current player is kicked out
-      pomelo.on('onKick', function() {
+      pomelo.on('onKick', function() {                                               // 被踢
         console.log('You have been kicked offline for the same account logined in other place.');
         app.changeView("login");
       });
 
-      // Handle disconect message, occours when the client is disconnect with servers
-      pomelo.on('disconnect', function(reason) {
+
+      pomelo.on('disconnect', function(reason) {                                     // 断开连接
         app.changeView("login");
       });
 
