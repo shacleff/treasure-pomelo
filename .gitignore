@@ -2,9 +2,8 @@
 */node-log.log
 logs/*.log
 *.log
+!game-server/logs/log.txt
 !.gitignore
-game-server/node_modules/*
-web-server/node_modules/*
 .project
 .settings/
 **/*.svn
@@ -13,3 +12,6 @@ web-server/node_modules/*
 *.sublime-project
 *.sublime-workspace
 *.DS_Store
+
+#game-server/node_modules/*
+#web-server/node_modules/*
