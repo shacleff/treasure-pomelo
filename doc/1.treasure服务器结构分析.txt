@@ -19,7 +19,9 @@
       根据移动时间 移动速度 和 目标点, 计算新的位置
 
   (3)servers
+
   (4)service
+    areaService就类似于一个Table一样
 
   (5)util
     一些工具
