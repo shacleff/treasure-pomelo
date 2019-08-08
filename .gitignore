@@ -12,7 +12,6 @@ logs/*.log
 *.sublime-project
 *.sublime-workspace
 *.DS_Store
-game-server/logs/node-log-undefined.log
 
 #game-server/node_modules/*
 #web-server/node_modules/*

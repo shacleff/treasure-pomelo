@@ -4,7 +4,12 @@
     <list default="true" id="0b04f17d-c5de-4c06-916d-0a625224e2f7" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/logs/node-log-undefined.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/log.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/logs/node-log-area-server-1.log" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/logs/node-log-area-server-1.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/logs/node-log-connector-server-1.log" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/logs/node-log-connector-server-1.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/logs/node-log-connector-server-2.log" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/logs/node-log-connector-server-2.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/logs/node-log-gate-server-1.log" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/logs/node-log-gate-server-1.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/logs/node-log-master-server-1.log" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/logs/node-log-master-server-1.log" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -21,9 +26,14 @@
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="252">
-              <caret line="14" column="39" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
+              <caret line="14" selection-start-line="14" selection-end-line="14" />
             </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/game-server/logs/log.txt">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -112,12 +122,12 @@
       <option name="presentableId" value="Default" />
       <updated>1565255825739</updated>
       <workItem from="1565255827149" duration="456000" />
-      <workItem from="1565256548837" duration="879000" />
+      <workItem from="1565256548837" duration="981000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1335000" />
+    <option name="totallyTimeSpent" value="1437000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="84" y="60" width="1765" height="877" extended-state="0" />
@@ -216,10 +226,13 @@
         <state relative-caret-position="-1132" />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/game-server/logs/log.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
-          <caret line="14" column="39" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
         </state>
       </provider>
     </entry>
