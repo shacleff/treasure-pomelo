@@ -12,6 +12,7 @@ logs/*.log
 *.sublime-project
 *.sublime-workspace
 *.DS_Store
+*.idea
 
 #game-server/node_modules/*
 #web-server/node_modules/*
