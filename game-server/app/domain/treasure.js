@@ -20,7 +20,7 @@ function Treasure(opts) {
 Treasure.prototype.init = function() {
 	this.type = this.consts.EntityType.TREASURE;
 	var Entity = bearcat.getFunction('entity');
-	Entity.call(this, this.opts);
+	Entity.call(this, this.opts); // 宝也是继承于Entity
 	this._init();
 }
 

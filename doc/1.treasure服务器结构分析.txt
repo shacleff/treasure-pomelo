@@ -1,8 +1,25 @@
-1)gate
-  (1)负载负载均衡，把癞子客户端的连接分散在2个connector群中
+1)服务器
+  (1)gate
+    a.前端负载均衡器具，把客户端的连接分散在2个connector群中
 
-2)connector
-  (2)用于接受和发送消息
+  (2)connector(2个)
+    b.用于接受和发送消息
 
-3)area
-  (3)驱动游戏场景和游戏逻辑
+  (3)area(1个)
+    c.驱动游戏场景和游戏逻辑
+
+2)app下模块划分
+  (1)consts
+
+  (2)domain
+    2个实体
+      player
+      treasure
+    移动
+      根据移动时间 移动速度 和 目标点, 计算新的位置
+
+  (3)servers
+  (4)service
+
+  (5)util
+    一些工具
