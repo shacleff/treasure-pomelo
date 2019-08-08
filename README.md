@@ -1,6 +1,6 @@
 # 修改
 
-webserver 下修改express版本
+## 1)webserver 下修改express版本
 
 	{
   		"name": "treasures",
@@ -11,7 +11,7 @@ webserver 下修改express版本
   		}
 	}
 
-gameserver下修改 "crc": "0.2.0", "pomelo": "2.2.x",版本，不然报mime的错误
+## 2)gameserver下修改 "crc": "0.2.0", "pomelo": "2.2.x",版本，不然报mime的错误
 
 	{
   		"name": "treasures",
@@ -26,31 +26,18 @@ gameserver下修改 "crc": "0.2.0", "pomelo": "2.2.x",版本，不然报mime的�
   		}
 	}
 
+## 3)概述
+*  这是一篇通过一个简单的 treasure 捡宝的例子讲述如何使用 [Bearcat](https://github.com/bearcatnode/bearcat) 来快速, 高效的进行 [pomelo](https://github.com/NetEase/pomelo) game 开发  
 
 
-#Treasures
-a tutorial demo of [pomelo](https://github.com/NetEase/pomelo)
-
-Treasures is a simple game in order to show how to use pomelo
-
-If you are using pomelo 0.2.x , you can check this branch [pomelo-0.2.5](https://github.com/NetEase/treasures/tree/pomelo-0.2.5)
-
-[Demo 详细说明](https://github.com/NetEase/pomelo/wiki/Tutorial-2----Treasures)
-
-[Demo Guide](https://github.com/NetEase/pomelo/wiki/Treasure)
-
-## 概述
-这是一篇通过一个简单的 treasure 捡宝的例子讲述如何使用 [Bearcat](https://github.com/bearcatnode/bearcat) 来快速, 高效的进行 [pomelo](https://github.com/NetEase/pomelo) game 开发  
-
-## 起步
-### 添加 bearcat
+## 4)添加 bearcat
 
 ```
 npm install bearcat --save
 ```
 
-添加context.json, 并指定 ***scan*** 扫描路径, 来自动扫描 POJOs  
-context.json
+## 5)添加context.json, 并指定 ***scan*** 扫描路径, 来自动扫描 POJOs  context.json
+
 ```
 {
 	"name": "bearcat-treasures",
@@ -59,8 +46,8 @@ context.json
 }
 ```
 
-修改app.js, 添加 bearcat 启动代码  
-app.js
+## 6)修改app.js, 添加 bearcat 启动代码  app.js
+
 ```
 var contextPath = require.resolve('./context.json');
 bearcat.createApp([contextPath]);
@@ -75,9 +62,9 @@ bearcat.start(function() {
 
 就是这么简单, bearcat 开发环境就已经搭建完毕, 之后就可以利用 bearcat 所提供的 IoC, AOP, 一致性配置等特性来编写简单, 可维护的 pomelo 应用  
 
-## 途中
-### handler, remote 交由 bearcat 管理
-handler, remote 都以 POJO 的形式编写  
+## 7)途中
+
+### handler, remote 交由 bearcat 管理  handler, remote 都以 POJO 的形式编写  
 由于之前handler, remote在pomelo里面是通过 pomelo-loader 来管理的, 因此需要做一下适配转化  
 
 ```
@@ -97,12 +84,12 @@ module.exports = function(app) {
 };
 ```
 
-通过适配, gateHandler 就交给了 bearcat 来进行管理, 之后 gateHandler 需要什么依赖, 仅仅在 getBean 的 metadata 配置中描述好依赖关系就行了  
+## 8)通过适配, gateHandler 就交给了 bearcat 来进行管理, 之后 gateHandler 需要什么依赖, 仅仅在 getBean 的 metadata 配置中描述好依赖关系就行了  
 上面的gateHandler例子中, 就向 bearcat 容器描述了, gateHandler 需要在构造函数中传入一个 ***app*** 对象, 在对象属性中需要一个 ***dispatcher*** 依赖  
 
-### domain 对象编写
-domain 代表着数据和模型, 包括玩家player, 宝物treasure, 移动move等等  
-domain 里的数据要被序列化, 需要定义序列化方法, 比如toJSON  
+## 9)domain 对象编写
+*  domain 代表着数据和模型, 包括玩家player, 宝物treasure, 移动move等等  
+*  domain 里的数据要被序列化, 需要定义序列化方法, 比如toJSON  
 
 entity.js
 ```
