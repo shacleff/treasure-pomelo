@@ -1,8 +1,5 @@
 # treasure项目: 环境搭建及其运行起来做的修改
-*  
-*  
-
-
+*  node: 10.16.0
 
 ## 1)webserver 下修改express版本
 
