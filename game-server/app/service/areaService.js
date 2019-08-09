@@ -3,17 +3,17 @@ var EventEmitter = require('events').EventEmitter;
 var bearcat = require('bearcat');
 var pomelo = require('pomelo');
 
-var AreaService = function () {
+var AreaService = function () { // 相当于桌子对象
     this.id = 0;
     this.width = 0;
     this.height = 0;
-    this.tickCount = 0; // player score rank
+    this.tickCount = 0;
     this.treasureCount = 0;
-    this.added = []; // the added entities in one tick
-    this.reduced = []; // the reduced entities in one tick
+    this.added = []; // 1个tick下新增的实体数组
+    this.reduced = []; // 1个tick下减少的实体数组
     this.players = {};
     this.entities = {};
-    this.channel = null;
+    this.channel = null; // AreaService就类似于一个桌子一样，channel只是一个普通属性
     this.actionManagerService = null;
     this.consts = null;
 };
@@ -26,17 +26,17 @@ AreaService.prototype.init = function (opts) {
     this.run(); //area run
 };
 
-AreaService.prototype.run = function () { //开启地图更新
-    setInterval(this.tick.bind(this), 100);
+AreaService.prototype.run = function () {
+    setInterval(this.tick.bind(this), 100); // 世界运行起来, 0.1s更新一次
 };
 
-AreaService.prototype.tick = function () { // 0.1s一次
+AreaService.prototype.tick = function () {
     this.actionManagerService.update();
     this.entityUpdate(); // 实体更新
     this.rankUpdate(); // 排行榜更新
 };
 
-AreaService.prototype.addAction = function (action) { //添加一个动作
+AreaService.prototype.addAction = function (action) {
     return this.actionManager().addAction(action);
 };
 
@@ -48,7 +48,7 @@ AreaService.prototype.abortAllAction = function (id) {
     return this.actionManager().abortAllAction(id);
 };
 
-AreaService.prototype.getChannel = function () { //得到某个地图中的channel，相当于一个服
+AreaService.prototype.getChannel = function () { // 得到某个地图中的channel，相当于一个桌子
     if (this.channel) {
         return this.channel;
     }
@@ -59,7 +59,6 @@ AreaService.prototype.getChannel = function () { //得到某个地图中的chann
 
 AreaService.prototype.addEvent = function (player) { //为玩家添加捡宝物事件
     var self = this;
-
 
     player.on('pickItem', function (args) { //玩家捡起宝物
         var player = self.getEntity(args.entityId);
@@ -106,34 +105,24 @@ AreaService.prototype.entityUpdate = function () { //向客户端广播去掉一
         this.added = [];
     }
 };
-/**
- * Add entity to area
- * @param {Object} e Entity to add to the area.
- */
-AreaService.prototype.addEntity = function (e) {
+
+AreaService.prototype.addEntity = function (e) { // 添加实体到场景
     if (!e || !e.entityId) {
         return false;
     }
 
-    //key：实体id   value：具体的对象
     this.entities[e.entityId] = e;
 
-    //判断，如果增加的是玩家的话
     if (e.type === this.consts.EntityType.PLAYER) {
+        this.getChannel().add(e.id, e.serverId); //channel里面增加一个玩家，参数是：玩家id + 服务器id
 
-        //channel里面增加一个玩家，参数是：玩家id + 服务器id
-        this.getChannel().add(e.id, e.serverId);
+        this.addEvent(e); // 为玩家添加捡包事件
 
-        //
-        this.addEvent(e);
-
-        //同一个玩家添加了2次，报错提醒
-        if (!!this.players[e.id]) {
+        if (!!this.players[e.id]) { //同一个玩家添加了2次，报错提醒
             logger.error('add player twice! player : %j', e);
         }
 
-        //玩家数组中记录下这个玩家实体id
-        this.players[e.id] = e.entityId;
+        this.players[e.id] = e.entityId;  //玩家数组中记录下这个玩家实体id
     } else if (e.type === this.consts.EntityType.TREASURE) { //添加的是宝物的话，地图上宝物数量+1
         this.treasureCount++;
     }
@@ -149,18 +138,15 @@ AreaService.prototype.rankUpdate = function () {
         this.tickCount = 0;
         var player = this.getAllPlayers(); //玩家都是添加到地图中的，从地图中得到所有玩家
 
-        //根据分数排名
-        player.sort(function (a, b) {
+        player.sort(function (a, b) { // 根据分数排名
             return a.score < b.score;
         });
 
-        //取得前10名
-        var ids = player.slice(0, 10).map(function (a) {
+        var ids = player.slice(0, 10).map(function (a) { // 取得前10名
             return a.entityId;
         });
 
-        //广播最新的排名消息
-        this.getChannel().pushMessage({
+        this.getChannel().pushMessage({ // 广播最新的排名消息
             route: 'rankUpdate',
             entities: ids
         });

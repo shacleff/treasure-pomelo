@@ -21,7 +21,13 @@
   (3)servers
 
   (4)service
-    areaService就类似于一个Table一样
+    a.areaService就类似于一个Table一样
+    b.areaService下有channel
 
   (5)util
     一些工具
+
+3)AreaService的代码很具有参考意义
+  (1)getChannel-->相当于获取当前的桌子，桌子不存在，则根据当前id创建出来这个桌子
+  (2)AreaService是一个良好的抽象，有id，这个id相当于桌子编号,每一个AreaService就对应棋牌中的一个桌子
+  (3)this.getChannel().leave(e.id, e.serverId); 难道玩家可以分配到不同服务器??
