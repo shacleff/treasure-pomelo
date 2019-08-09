@@ -3,16 +3,16 @@ var EventEmitter = require('events').EventEmitter;
 var bearcat = require('bearcat');
 var pomelo = require('pomelo');
 
-var AreaService = function () { // 相当于桌子对象
+var AreaService = function () { // 相当于桌子对象，桌子里面除了channel，还有players等
     this.id = 0;
     this.width = 0;
     this.height = 0;
     this.tickCount = 0;
     this.treasureCount = 0;
-    this.added = []; // 1个tick下新增的实体数组
-    this.reduced = []; // 1个tick下减少的实体数组
-    this.players = {};
-    this.entities = {};
+    this.added = [];
+    this.reduced = [];
+    this.players = {}; // 玩家id列表,控件换时间
+    this.entities = {}; // 所有实体列表(包括了玩家 + 宝物)
     this.channel = null; // AreaService就类似于一个桌子一样，channel只是一个普通属性
     this.actionManagerService = null;
     this.consts = null;
@@ -23,7 +23,7 @@ AreaService.prototype.init = function (opts) {
     this.width = opts.width;
     this.height = opts.height;
     this.generateTreasures(40); //初始化地图，在地图上生成40个宝物
-    this.run(); //area run
+    this.run(); // 区域服务跑起来
 };
 
 AreaService.prototype.run = function () {
@@ -65,12 +65,10 @@ AreaService.prototype.addEvent = function (player) { //为玩家添加捡宝物�
         var treasure = self.getEntity(args.target); //宝物
         player.target = null;
         if (treasure) { //捡到宝物
+            player.addScore(treasure.score); // 玩家分数增加
+            self.removeEntity(args.target); // 移除掉宝物
 
-            //服务器先做数据处理
-            player.addScore(treasure.score); //1.玩家分数增加
-            self.removeEntity(args.target); //移除掉宝物
-
-            self.getChannel().pushMessage({ //广播捡到了宝物。。广播后，客户端收到信息，进行地图更新之类的
+            self.getChannel().pushMessage({ // 给所有地图玩家广播捡到了宝物,广播后，客户端收到信息，进行地图更新之类的
                 route: 'onPickItem',
                 entityId: args.entityId,
                 target: args.target,
@@ -80,7 +78,7 @@ AreaService.prototype.addEvent = function (player) { //为玩家添加捡宝物�
     });
 };
 
-AreaService.prototype.entityUpdate = function () { //向客户端广播去掉一帧内应该去掉的实体对象
+AreaService.prototype.entityUpdate = function () { // 向客户端广播去掉一次tick内 `去掉的` `新增的` 实体对象
     if (this.reduced.length > 0) {
         this.getChannel().pushMessage({
             route: 'removeEntities',
@@ -97,7 +95,7 @@ AreaService.prototype.entityUpdate = function () { //向客户端广播去掉一
             r.push(added[i].toJSON());
         }
 
-        this.getChannel().pushMessage({ // 广播新增的实体对象
+        this.getChannel().pushMessage({
             route: 'addEntities',
             entities: r
         });
@@ -153,11 +151,6 @@ AreaService.prototype.rankUpdate = function () {
     }
 };
 
-/**
- * Remove Entity form area
- * @param {Number} entityId The entityId to remove
- * @return {boolean} remove result
- */
 AreaService.prototype.removeEntity = function (entityId) {
     var e = this.entities[entityId];
     if (!e) {
@@ -165,21 +158,11 @@ AreaService.prototype.removeEntity = function (entityId) {
     }
 
     if (e.type === this.consts.EntityType.PLAYER) {
-
-        //玩家离线了，则让玩家离开通道
         this.getChannel().leave(e.id, e.serverId);
-
-        //终止掉玩家的动作
         this.actionManagerService.abortAllAction(entityId);
-
-        //玩家离开了，玩家map中删除玩家信息
         delete this.players[e.id];
-
     } else if (e.type === this.consts.EntityType.TREASURE) {
-
         this.treasureCount--;
-
-        //宝物少于25个，立马再生成15个
         if (this.treasureCount < 25) {
             this.generateTreasures(15);
         }
@@ -187,20 +170,15 @@ AreaService.prototype.removeEntity = function (entityId) {
 
     delete this.entities[entityId];
 
-
     this.reduced.push(entityId);
     return true;
 };
 
-/**
- * Get entity from area
- * @param {Number} entityId.
- */
 AreaService.prototype.getEntity = function (entityId) {
     return this.entities[entityId];
 };
 
-AreaService.prototype.getEntities = function (ids) { // id列表转化为实体列表
+AreaService.prototype.getEntities = function (ids) { // id列表-->实体列表
     var result = [];
     for (var i = 0; i < ids.length; i++) {
         var entity = this.entities[ids[i]];
@@ -211,7 +189,7 @@ AreaService.prototype.getEntities = function (ids) { // id列表转化为实体�
     return result;
 };
 
-AreaService.prototype.getAllPlayers = function () { // 玩家也属于实体的一部分.根据玩家id，得到实体列表
+AreaService.prototype.getAllPlayers = function () { // 得到玩家实体列表
     var _players = [];
     var players = this.players;
     for (var id in players) {
