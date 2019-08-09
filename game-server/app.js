@@ -29,7 +29,8 @@ var Configure = function () {
 
         var areaService = bearcat.getBean('areaService');
         var dataApiUtil = bearcat.getBean('dataApiUtil');
-        areaService.init(dataApiUtil.area().findById(areaId));
+
+        areaService.init(dataApiUtil.area().findById(areaId)); // 地图运行起来
     });
 };
 

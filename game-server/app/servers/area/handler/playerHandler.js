@@ -9,7 +9,7 @@ var PlayerHandler = function (app) {
 };
 
 PlayerHandler.prototype.enterScene = function (msg, session, next) {   // 客户端请求进入这个地图, 之后分配名字，广播地图信息
-    var role = this.dataApiUtil.role().random();
+    var role = this.dataApiUtil.role().random(); // 随机分配一个角色
 
     var player = bearcat.getBean('player', {
         id: msg.playerId,
@@ -80,7 +80,6 @@ PlayerHandler.prototype.move = function (msg, session, next) {   // 客户端在
         next(new Error('fail to move for illegal path'), {
             code: this.consts.MESSAGE.ERR
         });
-
         return;
     }
 
@@ -95,7 +94,7 @@ PlayerHandler.prototype.move = function (msg, session, next) {   // 客户端在
             sPos: player.getPos()
         });
 
-        this.areaService.getChannel().pushMessage({                             // 广播玩家移动消息
+        this.areaService.getChannel().pushMessage({ // 广播玩家移动消息
             route: 'onMove',
             entityId: player.entityId,
             endPos: endPos

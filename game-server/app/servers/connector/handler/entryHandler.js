@@ -1,4 +1,4 @@
-var Code = require('../../../../../shared/code');
+var Code = require('../../../../../shared/code'); // 引入公共模块
 var bearcat = require('bearcat');
 
 var id = 1; // 自增玩家id
@@ -10,12 +10,14 @@ var EntryHandler = function (app) {
 
 EntryHandler.prototype.entry = function (msg, session, next) {
     var self = this;
-    var playerId = parseInt(this.serverId + id, 10);
+    var playerId = parseInt(this.serverId + id, 10); // 玩家连接上connector后，根据分配的connector，决定playerId
     id += 1;
-    session.bind(playerId);
-    session.set('playerId', playerId);
-    //session.set('playername', msg.name);
+
+    session.bind(playerId); // 绑定uid
+
+    session.set('playerId', playerId); // set-->this.settings里面存  key-->value
     session.set('areaId', 1);
+
     session.on('closed', onUserLeave.bind(null, self.app));
     session.pushAll();
 

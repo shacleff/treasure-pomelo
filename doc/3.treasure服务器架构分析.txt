@@ -3,10 +3,12 @@
     a.前端负载均衡器具，把客户端的连接分散在2个connector群中
 
   (2)connector(2个)
-    b.用于接受和发送消息
+    a.用于接受和发送消息
+    b.connector-->entryHandler-->承载玩家的连接
+    c.玩家socket断开连接，也要通知各个服务器
 
   (3)area(1个)
-    c.驱动游戏场景和游戏逻辑
+    a.驱动游戏场景和游戏逻辑
 
 2)app下模块划分
   (1)consts
@@ -31,3 +33,41 @@
   (1)getChannel-->相当于获取当前的桌子，桌子不存在，则根据当前id创建出来这个桌子
   (2)AreaService是一个良好的抽象，有id，这个id相当于桌子编号,每一个AreaService就对应棋牌中的一个桌子
   (3)this.getChannel().leave(e.id, e.serverId); 难道玩家可以分配到不同服务器??
+
+4)AreaService是如何引入的?
+  在:
+    area/handler/playerHandler: 让前端使用的
+      如：玩家请求加入地图、请求移动
+
+    area/remote/playerRemote: 让后端使用的,发起rpc调用
+      如：断开connector的连接后
+
+    下用，公用的一个进程
+
+5)session.bind
+  (1)设置: session.bind(playerId); // 绑定uid
+  (2)访问: session.uid
+
+6)session.set
+  (1)设置:
+    session.set('playerId', playerId); // set-->this.settings里面存  key-->value
+    session.set('areaId', 1);
+
+  (2)访问
+     playerId: session.get('playerId'),
+     areaId: session.get('areaId')
+
+  (3)思考：
+    a.那玩家登陆进来时，在哪个房间确定了，之后的就好说了
+    b.set是存到settings里的
+
+7)next和pushMessage的区别
+  (1)next是： 请求后，推送给单个人
+  (2)pushMessage是往channel里面所有人推送消息
+
+8)地图运行起来
+  (1)areaService.init(dataApiUtil.area().findById(areaId)); // 地图运行起来
+
+
+
+

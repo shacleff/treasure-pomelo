@@ -5,7 +5,7 @@ var PlayerRemote = function (app) {
     this.utils = null;
     this.consts = null;
     this.areaService = null;
-}
+};
 
 PlayerRemote.prototype.playerLeave = function (args, cb) {
     var areaId = args.areaId;     // 哪个玩家离开哪个地图根据id标识
